@@ -1,17 +1,30 @@
 # Sistema de Gerenciamento de Shopping — Desafio Java (POO)
- 
-Desafio da disciplina de Laboratório I, do curso de Análise e Desenvolvimento de Sistemas, com foco em Programação Orientada a Objetos em Java. O sistema simula o cadastro e gerenciamento de um shopping center, suas lojas e produtos. O repositório está na Etapa 4 do desafio, que já aplica herança, polimorfismo, encapsulamento, sobrecarga de construtores e composição de objetos.
- 
-## Sobre o projeto
- 
-O sistema modela um `Shopping`, que possui várias `Loja`s, cada uma com um `Endereco`, uma data de fundação e um estoque de `Produto`s. As lojas são especializadas por segmento (Cosmético, Vestuário, Bijuteria, Alimentação e Informática), cada uma com atributos próprios, todas herdando de uma classe base comum `Loja`.
- 
-O projeto tem duas formas de execução:
- 
-- `Principal`: cadastro interativo via `Scanner`, com menu no console.
-- `ValidadorEtapa4`: classe que instancia e testa todos os métodos das classes, imprimindo `[OK]`/`[NOK]` no console. Funciona como uma suíte de testes manual do desafio.
+
+Uma aplicação em Java que simula o cadastro e o gerenciamento de um shopping e suas lojas. Projeto desenvolvido como desafio da disciplina Laboratório I (curso de Análise e Desenvolvimento de Sistemas), com foco em Programação Orientada a Objetos: herança, polimorfismo, encapsulamento e composição.
+
+## Visão geral
+
+O sistema modela as seguintes entidades principais:
+
+- Shopping: agrega várias lojas e permite operações como inserir/remover lojas e consultar informações.
+- Loja: superclasse que contém dados comuns a todas as lojas (nome, funcionários, salário-base, endereço, data de fundação e estoque de produtos).
+- Especializações de Loja: Cosmetico, Vestuario, Bijuteria, Alimentacao e Informatica (cada uma com atributos específicos).
+- Produto: representa um item do estoque, com nome, preço e data de validade.
+- Endereco e Data: classes auxiliares para modelar endereço e validar/manipular datas.
+
+O repositório inclui também uma classe `Principal` para execução interativa via console e `ValidadorEtapa4`, que executa uma bateria de testes manuais imprimindo `[OK]`/`[NOK]` no console.
+
+## Principais funcionalidades
+
+- Cadastro de lojas e produtos (arrays de capacidade fixa definidas na criação das instâncias).
+- Remoção de lojas e produtos por nome.
+- Classificação do tamanho da loja por número de funcionários (P/M/G).
+- Cálculo de gastos com salários (com tratamento para salário não informado).
+- Verificação de validade de produtos a partir de sua data de validade.
+- Localização da loja de informática com o seguro de eletrônicos mais caro.
+
 ## Modelagem das classes
- 
+
 ```mermaid
 classDiagram
     class Endereco {
@@ -24,7 +37,7 @@ classDiagram
         -String complemento
         +toString() String
     }
- 
+
     class Data {
         -int dia
         -int mes
@@ -33,7 +46,7 @@ classDiagram
         -dataValida(dia, mes, ano) boolean
         +toString() String
     }
- 
+
     class Produto {
         -String nome
         -int preco
@@ -41,7 +54,7 @@ classDiagram
         +estaVencido(Data dataAtual) Boolean
         +toString() String
     }
- 
+
     class Loja {
         -String nome
         -int quantidadeFuncionarios
@@ -56,7 +69,7 @@ classDiagram
         +imprimeProdutos() void
         +toString() String
     }
- 
+
     class Cosmetico {
         -double taxaComercializacao
     }
@@ -72,7 +85,7 @@ classDiagram
     class Informatica {
         -double seguroEletronicos
     }
- 
+
     class Shopping {
         -String nome
         -Endereco endereco
@@ -83,13 +96,13 @@ classDiagram
         +lojaSeguroMaisCaro() Informatica
         +toString() String
     }
- 
+
     Loja <|-- Cosmetico
     Loja <|-- Vestuario
     Loja <|-- Bijuteria
     Loja <|-- Alimentacao
     Loja <|-- Informatica
- 
+
     Loja "1" *-- "1" Endereco
     Loja "1" *-- "1" Data
     Loja "1" *-- "0..*" Produto
@@ -97,34 +110,35 @@ classDiagram
     Shopping "1" *-- "1" Endereco
     Shopping "1" *-- "0..*" Loja
 ```
- 
+
 ### Descrição das classes
- 
+
 | Classe | Responsabilidade |
 |---|---|
 | `Endereco` | Representa o endereço completo (rua, número, complemento, cidade, estado, país e CEP) de uma loja ou shopping. |
-| `Data` | Representa uma data (dia/mês/ano) com validação de datas inválidas e verificação de ano bissexto. |
-| `Produto` | Representa um produto do estoque, com nome, preço e data de validade, incluindo verificação de vencimento. |
-| `Loja` | Classe base (superclasse) com os dados comuns a qualquer loja: nome, funcionários, salário-base, endereço, data de fundação e estoque de produtos (array de tamanho fixo). Possui um construtor alternativo em que o salário-base não é informado (assume `-1` como "não definido"). |
+| `Data` | Representa uma data (dia/mês/ano) com validação e verificação de ano bissexto. Datas inválidas recebem `01/01/2000` por padrão. |
+| `Produto` | Representa um produto do estoque, com nome, preço e data de validade; inclui método para verificar se está vencido. |
+| `Loja` | Superclasse que contém dados comuns a qualquer loja e operações básicas sobre estoque e funcionários. |
 | `Cosmetico` | Especialização de `Loja` com taxa de comercialização. |
 | `Vestuario` | Especialização de `Loja` com indicador de produtos importados. |
 | `Bijuteria` | Especialização de `Loja` com meta de vendas. |
 | `Alimentacao` | Especialização de `Loja` com data do alvará sanitário. |
 | `Informatica` | Especialização de `Loja` com valor do seguro de eletrônicos. |
-| `Shopping` | Agrega várias lojas (array de tamanho fixo), permitindo inserir, remover, contar lojas por tipo e localizar a loja de informática com o seguro mais caro. |
+| `Shopping` | Agrega várias lojas (array de tamanho fixo) e implementa consultas/operações sobre o conjunto de lojas. |
 | `Principal` | Ponto de entrada interativo (menu via `Scanner`) para cadastrar lojas e produtos. |
-| `ValidadorEtapa4` | Bateria de testes manuais que instancia e exercita todos os métodos das classes, reportando `[OK]`/`[NOK]` no console. |
- 
+| `ValidadorEtapa4` | Suíte de testes manuais que instancia e exercita métodos das classes, reportando `[OK]`/`[NOK]`. |
+
 ## Regras de negócio implementadas
- 
-- Datas inválidas (dia/mês fora do intervalo, considerando ano bissexto) recebem automaticamente o valor padrão `01/01/2000`.
-- Se a loja for criada sem informar o salário-base, ele assume `-1` e é exibido como `"Não definido"`; nesse caso, `gastosComSalario()` também retorna `-1`.
-- `tamanhoDaLoja()` classifica a loja por número de funcionários: `P` até 9, `M` de 10 a 30, `G` acima de 30.
-- `insereProduto` e `insereLoja` retornam `false` quando não há espaço disponível no array (capacidade fixa definida na criação).
-- `estaVencido` compara a data de validade do produto com uma data de referência (ano, depois mês, depois dia).
-- `lojaSeguroMaisCaro` percorre as lojas do tipo `Informatica` e retorna a que tem o maior valor de seguro de eletrônicos.
+
+- Datas inválidas (dia/mês fora do intervalo, considerando ano bissexto) recebem `01/01/2000`.
+- Se o salário-base for omitido ao criar a loja, o valor será `-1` e exibido como "Não definido"; `gastosComSalario()` retorna `-1` nesse caso.
+- `tamanhoDaLoja()` classifica a loja por número de funcionários: `P` (até 9), `M` (10 a 30), `G` (acima de 30).
+- `insereProduto` e `insereLoja` retornam `false` quando o array atingiu sua capacidade (capacidade fixa). 
+- `estaVencido` compara ano &rarr; mês &rarr; dia para determinar se um produto está vencido.
+- `lojaSeguroMaisCaro` retorna a loja de `Informatica` com maior valor de seguro.
+
 ## Estrutura do projeto
- 
+
 ```
 Etapa_4/
 └── Desafio/
@@ -141,30 +155,37 @@ Etapa_4/
     ├── Endereco.java
     └── Data.java
 ```
- 
-## Como executar
- 
+
+## Como compilar e executar
+
 Requer JDK 8 ou superior.
- 
+
 ```bash
 # a partir da pasta Etapa_4
 javac Desafio/*.java
- 
-# menu interativo
+
+# executar o menu interativo
 java Desafio.Principal
- 
-# suíte de validação/testes
+
+# executar a suíte de validação/testes
 java Desafio.ValidadorEtapa4
 ```
- 
+
+Dica: se preferir, abra a pasta `Etapa_4/Desafio` em uma IDE (Eclipse, IntelliJ, VS Code) e configure o projeto como aplicação Java para executar as classes `Principal` ou `ValidadorEtapa4` diretamente.
+
 ## Tecnologias
- 
-- Java (herança, polimorfismo, encapsulamento, composição, sobrecarga de construtores)
+
+- Java (POO: herança, polimorfismo, encapsulamento, composição, sobrecarga de construtores)
 - Entrada de dados via `java.util.Scanner`
+
 ## Contexto acadêmico
- 
-Repositório desenvolvido para o desafio da disciplina de Laboratório I, do curso de Análise e Desenvolvimento de Sistemas, com foco em herança e composição a partir da modelagem de um domínio real (shopping, lojas e produtos).
- 
+
+Repositório desenvolvido para fins educacionais como parte do desafio da disciplina Laboratório I do curso de Análise e Desenvolvimento de Sistemas.
+
+## Contribuições
+
+Contribuições não são necessárias, mas sugestões são bem-vindas para melhorar a clareza dos exemplos ou adicionar testes automatizados.
+
 ## Licença
- 
+
 Projeto de fins educacionais/acadêmicos.
